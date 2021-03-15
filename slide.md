@@ -53,9 +53,8 @@ Timestamp - 357993179327945
 3630:  bl  1a40 <pthread_mutex_unlock@plt>  
 Timestamp - 357994169257407 
 ```
-###
 
-we can determine the key failure object position according to the signal SIGSEGV, Segmentation fault from coredump 
+### we can determine the key failure object position according to the signal SIGSEGV, Segmentation fault from coredump 
 
 ```bash 
 3628: ldr  x0, [sp,#88]  -> <_Z8consumerPv>_sp,#88 
@@ -97,6 +96,8 @@ Context - Context ID = 0x597
 
 3630: bl  1a40 <pthread_mutex_unlock@plt>  
 ```
+
+![Pbzip2 concurrency bug](bug.jpg)
 
 ---
 
