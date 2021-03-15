@@ -1,7 +1,7 @@
 ---
 title: "Arm ETM and PMU Project Group Progress Report"
-author: "Yiming Zhang"
-institute: "COMPASS"
+author: ""
+institute: ""
 urlcolor: blue
 colortheme: "beaver"
 date: "March 16, 2021"
