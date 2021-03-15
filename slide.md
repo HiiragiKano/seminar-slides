@@ -28,48 +28,33 @@ marp: true
 
 - Hook ***New/Delete*** to get the heap address which is not recorded by sysdig.
 
-### Hook result
-```Bash 
+Hook result
 
-thread_id_1417 : ...function new... : 0x55555916d0 with size=48  
-thread_id_1417 : ...function new... : 0x5555591710 with size=48  
-thread_id_1417 : ...function new... : 0x5555591750 with size=48  
-thread_id_1417 : ...function new... : 0x5555591790 with size=72  
-... 
-
+```bash    
+thread_id_1417 : ...new... : 0x5555591790 with size=72  
 ```
-###
+
 
 ---
 
 ## Prototype of concurrency bug from pbzip2
 
-### Crash position
+- Crash position
 
-```Bash 
-
+```bash 
 Timestamp - 357993179327945
 <_Z8consumerPv>
-3628: ldr  x0, [sp,#88] x0=0, sp,#88=0x5555591790, [sp,#88]=0  
+3628: ldr  x0, [sp,#88] x0=0, sp,#88=0x5555591790,[sp,#88]=0  
 362c: ldr  x0, [x0,#48] x0,#48=48  
 3630:  bl  1a40 <pthread_mutex_unlock@plt>  
 Timestamp - 357994169257407 
-
 ```
-
-###
 
 we can determine the key failure object position according to the signal SIGSEGV, Segmentation fault from coredump 
 
-###
-
-```Bash 
-
+```bash 
 3628: ldr  x0, [sp,#88]  -> <_Z8consumerPv>_sp,#88 
-
 ```
-
-###
 
 ---
 
@@ -83,9 +68,7 @@ we can determine the key failure object position according to the signal SIGSEGV
 
 Find Root cause  according to corresponding control flow and data flow with order between main and consumer thread.
 
-### 
-
-```Bash
+```bash
 Context - Context ID = 0x589
 <_Z11queueDeleteP5queue>
 3c00: ldr  x0, [sp, #24] x0=0x5555591790,sp,#24=0x7FFFFFF6B8,[sp,#24]=0x5555591790  
@@ -99,8 +82,6 @@ Context - Context ID = 0x597
 3630: bl  1a40 <pthread_mutex_unlock@plt>  
 ```
 
-###
-
 ---
 
 ## Overhead evaluation
@@ -113,13 +94,12 @@ Context - Context ID = 0x597
     
     Open the ETM and sysdig at the same time is 0.47%.
 
-###
-
-Due to the USB disk I/O limitation, we need to use ssd to test the ETM writting overhead further.
+Due to the USB disk I/O limitation, we need to use ssd to test the ETM copy overhead further.
 
 ---
 
 ## Plan
 
 - POCs collection and Evaluation
+
 - Switch to SSD and test the overhead
