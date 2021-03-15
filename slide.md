@@ -63,7 +63,7 @@ we can determine the key failure object position according to the signal SIGSEGV
 
 ## Find the corresponding instructions with order from flow analysis
 
-![Flow graph from Inclusion-based Points-to Analysis](flow_graph.png)
+![Target Flow graph from Inclusion-based Points-to Analysis](flow_graph.png)
 
 ---
 
