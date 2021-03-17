@@ -19,8 +19,6 @@ marp: true
 
 ![Architecture of Our Project](figs/Architecture.pdf)
 
----
-
 # Online Part
 
 ---
@@ -142,8 +140,6 @@ thread_id_1417 : ...new... : 0x5555591710 with size=48
 thread_id_1417 : ...new... : 0x5555591750 with size=48
 thread_id_1417 : ...new... : 0x5555591790 with size=72  
 ```
-
----
 
 # Offline Part
 
