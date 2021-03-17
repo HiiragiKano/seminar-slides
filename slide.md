@@ -229,14 +229,14 @@ Why we need Include-point-set analysis
 ## Include-point-set analysis
 
 **Get the memory pointer transfer relation**
-![Memory pointer transfer relation graph](figs/brefore_graph.jpeg)
+![](figs/before_graph.jpeg)
 
 ---
 
 ## Include-point-set analysis
 
 **Get the memory pointer transfer relation**
-![Memory pointer transfer relation graph](figs/final_graph.jpeg)
+![](figs/final_graph.jpeg)
 
 ---
 
@@ -258,8 +258,7 @@ Why we need Include-point-set analysis
 ## Identical Re-execution for complete data flow construction
 
 Therefore, ETM timestamp accuracy is adequate in most of practical concurrency programe
-
-![](figs/Timestamp.png)
+![](figs/Timestamp_programe.png)
 
 ---
 
