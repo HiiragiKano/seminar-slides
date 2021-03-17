@@ -229,6 +229,13 @@ Why we need Include-point-set analysis
 ## Include-point-set analysis
 
 **Get the memory pointer transfer relation**
+![Memory pointer transfer relation graph](figs/brefore_graph.jpeg)
+
+---
+
+## Include-point-set analysis
+
+**Get the memory pointer transfer relation**
 ![Memory pointer transfer relation graph](figs/final_graph.jpeg)
 
 ---
