@@ -23,6 +23,8 @@ marp: true
 
 # Online Part
 
+---
+
 ## Trace
 
 ### Why we need more record in Online part?
@@ -144,6 +146,8 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 ---
 
 # Offline Part
+
+---
 
 ## Control flow construction and Data flow inference
 
