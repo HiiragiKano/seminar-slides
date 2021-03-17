@@ -149,12 +149,12 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 
 ### Input: etm trace + coredump + record information
 
-    - etm trace + program binnary -> control flow
-    - control flow + coredump + record information -> data flow
+- etm trace + program binnary -> control flow
+- control flow + coredump + record information -> data flow
 
 ### Output: Execution flow
 
-    - Including **order control flow** and **data flow** 
+- Including **order control flow** and **data flow** 
 
 ---
 
@@ -198,7 +198,6 @@ Why we need Include-point-set analysis
 ## Include-point-set analysis
 
 **input: control_flow, analyse and construct constraints**
-
 ![Constraint rules](figs/constraint_rules.pdf)
 
 ---
@@ -245,7 +244,6 @@ int *c = *q;
 ## Include-point-set analysis
 
 **Get the memory pointer transfer relation**
-
 ![Memory pointer transfer relation graph](figs/final_graph.jpeg)
 
 ---
@@ -289,22 +287,28 @@ Therefore, ETM timestamp accuracy is adequate in most of practical concurrency p
 
 ---
 
-## Root Cause of concurrency bug finding
+## Root cause of concurrency bug finding
 
-**2.Adaptive Hardware breakpoint/watchpoint Approach**
+### input: failure type, analysis point obj location, execution flow, memory pointer transfer relation graph
 
-### input: location of hardware breakpoint/watchpoint
-- Set location of hardware breakpoint/watchpoint
+- according to failure type to use corresponding bug root cause analysis pattern
+    - if Non Deadlock, including order violation + atomic violation:
+        - analyse traget variable memory location(single or multi variables)
+        - get corresponding instructions from execution flow according to transfer relation graph
+        - get the data value and order from corresponding instructions
+        - output corresponding instructions between threads with correct order
 
-- Re-execution and output coredump of corresponding location
-
-- Using Control flow construction and Data flow inference
+    - If Deadlock: output bug root cause: lock request instruction between threads with corresponding order
 
 ### output:
-- Complete execution flow(control and data)
+
+- The result of root cause of concurrency bug
 
 ---
 
+# Prototype
+
+---
 
 ## Prototype of concurrency bug from pbzip2
 
@@ -339,32 +343,9 @@ Timestamp - 357994169257407
 ## Find Root cause{.allowframebreaks}
 
 Find Root cause  according to corresponding control flow and data flow with order between main and consumer thread.
+![](figs/root_cause_result.pdf)
 
-```bash
-Context - Context ID = 0x589
-<_Z11queueDeleteP5queue>
-3c00: ldr  x0, [sp, #24] 
-(x0=0x5555591790,sp,#24=0x7FFFFFF6B8,[sp,#24]=0x5555591790)
-
-3c10:  bl  1b40 <_ZdlPvm@plt> 
-([0x5555591790]=0)
-
-3c14: str  xzr, [sp, #24]
-([sp, #24]=0)
-```
-
-```bash
-Context - Context ID = 0x597
-<_Z8consumerPv>:
-3628: ldr  x0, [sp, #88]
-(x0=0, sp,#88=0x5555591790, [sp,#88]=0 )
-
-362c: ldr  x0, [x0, #48]
-(x0,#48=48 )
-
-3630: bl  1a40 <pthread_mutex_unlock@plt>  
-```
-
+## Source code point of view
 ![Pbzip2 concurrency bug](figs/bug.jpg)
 
 ---
@@ -382,8 +363,3 @@ Due to the USB disk I/O limitation, we need to use ssd to test the ETM copy over
 
 ---
 
-## Plan
-
-- POCs collection and Evaluation
-
-- Switch to SSD and test the overhead
