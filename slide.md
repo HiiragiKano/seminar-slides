@@ -228,7 +228,6 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
-**Get the memory pointer transfer relation**
 ![](figs/before_graph.jpeg)
 
 ---
