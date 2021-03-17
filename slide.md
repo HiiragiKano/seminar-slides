@@ -356,9 +356,10 @@ Find Root cause  according to corresponding control flow and data flow with orde
 
 - Overhead 
     - Only enable the ETM is less than 0.1%.
-    - Open the ETM and sysdig at the same time is 0.47%.
+    - Open the ETM and sysdig at the same time is 0.21%.
+    - ETM Trace data copy overhead
+        - 33554432 bytes (34 MB, 32 MiB) copied, 0.531146 s
+        - 536870912 bytes (537 MB, 512 MiB) copied, 9.1026 s
 
-
-Due to the USB disk I/O limitation, we need to use ssd to test the ETM copy overhead further.
 
 
