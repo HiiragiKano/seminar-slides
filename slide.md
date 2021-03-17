@@ -289,8 +289,6 @@ Therefore, ETM timestamp accuracy is adequate in most of practical concurrency p
 
 - The result of root cause of concurrency bug
 
----
-
 # Prototype
 
 ---
@@ -301,13 +299,19 @@ Therefore, ETM timestamp accuracy is adequate in most of practical concurrency p
 
 ```bash 
 Timestamp - 357993179327945
-<_Z8consumerPv>
-3628: ldr  x0, [sp,#88]
-(x0=0, sp,#88=0x5555591790,[sp,#88]=0 )
 
-362c: ldr  x0, [x0,#48] x0,#48=48
+<_Z8consumerPv>
+
+3628: ldr  x0, [sp,#88]
+
+data: (x0=0, sp,#88=0x5555591790,[sp,#88]=0 )
+
+362c: ldr  x0, [x0,#48] 
+
+data: x0,#48=48
 
 3630:  bl  1a40 <pthread_mutex_unlock@plt>  
+
 Timestamp - 357994169257407 
 ```
 
@@ -325,9 +329,10 @@ Timestamp - 357994169257407
 
 ---
 
-## Find Root cause{.allowframebreaks}
+## Find Root cause
 
 Find Root cause  according to corresponding control flow and data flow with order between main and consumer thread.
+
 ![](figs/root_cause_result.pdf)
 
 ## Source code point of view
@@ -346,5 +351,4 @@ Find Root cause  according to corresponding control flow and data flow with orde
 
 Due to the USB disk I/O limitation, we need to use ssd to test the ETM copy overhead further.
 
----
 
