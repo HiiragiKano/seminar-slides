@@ -233,7 +233,7 @@ Why we need Include-point-set analysis
 
 ---
 
-## Identical Re-execution for data flow construction
+## Identical Re-execution for complete data flow construction
 
 **1.Re-execution adjustment**
 
@@ -248,7 +248,7 @@ Why we need Include-point-set analysis
 
 ---
 
-## Identical Re-execution for data flow construction
+## Identical Re-execution for complete data flow construction
 
 Therefore, ETM timestamp accuracy is adequate in most of practical concurrency programe
 
@@ -256,7 +256,7 @@ Therefore, ETM timestamp accuracy is adequate in most of practical concurrency p
 
 ---
 
-## Identical Re-execution for data flow construction
+## Identical Re-execution for complete data flow construction
 
 **2.Adaptive Hardware breakpoint/watchpoint Approach**
 
@@ -289,11 +289,11 @@ Therefore, ETM timestamp accuracy is adequate in most of practical concurrency p
 
 - The result of root cause of concurrency bug
 
-# Prototype
+# Sample
 
 ---
 
-## Prototype of concurrency bug from pbzip2
+## Concurrency bug from pbzip2
 
 ### Crash position
 
@@ -317,7 +317,7 @@ Timestamp - 357994169257407
 
 ---
 
-## Prototype of concurrency bug from pbzip2
+## Concurrency bug from pbzip2
 
 ### we can determine the key failure object position according to the signal SIGSEGV, Segmentation fault from coredump 
 
