@@ -1,10 +1,10 @@
 ---
-title: "Arm ETM and PMU Project Group Progress Report"
-author: ""
+title: "Arm ETM Project Progress Report"
+author: "Yiming Zhang"
 institute: ""
 urlcolor: blue
 colortheme: "beaver"
-date: "March 16, 2021"
+date: "March, 2021"
 theme: "Heverlee"
 aspectratio: 43 
 lang: en-US
@@ -21,7 +21,9 @@ marp: true
 
 ---
 
-## Online Part
+# Online Part
+
+## Trace
 
 ### Why we need more record in Online part?
 
@@ -75,7 +77,7 @@ int syscall_trace_enter(struct pt_regs *regs)
 ## Sysdig: A Tool Could Capture Syscalls
 
 - **sysdig** is a universal system visibility tool.
-- sysdig leverages `tracepoints` and load drivers to capture kernel events.
+- sysdig leverages ***tracepoints*** and load drivers to capture kernel events.
 
 ---
 
@@ -94,7 +96,7 @@ int syscall_trace_enter(struct pt_regs *regs)
 A receipt for using sysdig to capture syscalls for a process named `zsh` and with pid `3981`
 
 ```bash
-root@ubuntu:/home# sysdig proc.name=zsh and proc.pid=3981
+root@Juno:/home# sysdig proc.name=zsh and proc.pid=3981
 3344 ... < read res=1 data=z 
 3345 ... > rt_sigprocmask 
 3346 ... < rt_sigprocmask 
@@ -115,7 +117,7 @@ root@ubuntu:/home# sysdig proc.name=zsh and proc.pid=3981
 ## Syscall record is still not enough
 
 - The return result of some important C and C++ library fuction 
-    - Such as **new** and **delete** fuction. Because the memory address is returned directly from the memory pool and not invoke the ***mmap*** syscall.
+    - Such as **new** and **delete** fuction. Because the memory address is returned directly from the memory pool and not invoked by the ***mmap*** syscall.
 
 - The return result of some trivial library function. 
     - Such as **strlen, strncpy, strncasecmp**
@@ -141,13 +143,14 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 
 ---
 
-## Offline Part
+# Offline Part
 
-### Control flow construction And Data flow inference
+## Control flow construction and Data flow inference
 
 - Input: etm trace + coredump + record information
     - etm trace + program binnary -> control flow
     - control flow + coredump + record information -> data flow
+
 
 - Output: Execution flow, including order control flow and data flow 
 
@@ -158,24 +161,110 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 
 ### Input: Execution Flow + coredump + other information
 
-- ***Include-point-set analysis*** The flow-insensitive relation of memory variables is analyzed, we can obtain the memory pointer transfer relation graph.
+- ***Include-point-set analysis***.The flow-insensitive relation of memory variables is analyzed, we can obtain the memory pointer transfer relation graph.
 
-- Analyse concurrency bug types. *** Deadlock or Non Deadlock ***
+- Analyse concurrency bug types. **Deadlock or Non Deadlock**
 
 - Analyse object and target position.
     - Deadlock:lock obj location
-    - Non Deadlock: corruption obj memory location, such as crash or parameter position which depend on the signal of failure (segment fault、abort)
+    - Non Deadlock: corruption obj memory location, such as crash or parameter position which depend on the signal of failure (**segment fault, abort...**)
 
-- Review relative instructions operands of these position. For instruction positions without data value in data flow, refer to the location of these instructions as Location of Hardware Breakpoint/Watchpoint
+- Review relative instructions operands of these position.
+    - For instruction positions without data value in data flow, refer to the location of these instructions as Location of Hardware Breakpoint/Watchpoint
 
-### Output: Memory pointer transfer relation graph、Failure type、analysis point obj location、location of hardware breakpoint/watchpoint
+---
+
+## Flow analysis
+
+### Output: 
+Memory pointer transfer relation graph, Failure type, analysis point obj location, location of hardware breakpoint/watchpoint.
 
 ---
 
 ## Include-point-set analysis
 Why we need Include-point-set analysis
+
 - The transfer relationship of the failure memory address is built so that all instruction locations related to the failed address can be found quickly
+
 - Refer and modify from Lazy Diagnosis of In-Production Concurrency Bug (SOSP 17)
+
+---
+
+## Include-point-set analysis
+
+### input: control_flow, analyse and construct constraints
+
+
+![Constraint rules](figs/constraint_rules.pdf)
+
+---
+
+## Include-point-set analysis
+
+
+![Constraint rules](figs/include_demo.pdf)
+
+---
+
+## Include-point-set analysis
+
+### Anderson algorithm
+
+![](figs/ame.pdf)
+
+---
+
+## Include-point-set analysis
+
+### Get the graph edges and points
+
+![](figs/get_edges.pdf)
+
+---
+
+## Include-point-set analysis
+
+
+![Memory pointer transfer relation graph](figs/final_graph.pdf)
+
+---
+
+## Identical Re-execution for data flow construction
+
+**Re-execution adjustment**
+
+- According to the original control flow order to instrument binary to set delay, so that the Thread execution order of racing accesses during replay is consistent with the original control flow
+    - The control flows of different threads in different CPU cores are combined into a control flow on a time line by the Timestamp of ETM
+
+### In ETM trace online part, we have set ETM event to maximize the timestamp generation
+
+- **Counter register** enable a trace unit to connect counter outputs to trace unit events, so that a counter at zero state can be used as a resource to activate an event
+
+- We configure initial counter value and reload value of counter registerto be **zero** so that make the timestamp register event generate all the time
+
+---
+
+## Identical Re-execution for data flow construction
+
+### ETM timestamp accuracy is adequate in most of practical concurrency programe
+
+![](figs/Timestamp.png)
+
+---
+
+## Identical Re-execution for data flow construction
+
+**Adaptive Hardware breakpoint/watchpoint Approach**
+
+### input: location of hardware breakpoint/watchpoint
+- Set location of hardware breakpoint/watchpoint
+
+- Re-execution and output coredump of corresponding location
+
+- Using Control flow construction and Data flow inference
+
+### output:
+- Complete execution flow(control and data)
 
 ---
 
@@ -206,7 +295,7 @@ Timestamp - 357994169257407
 
 ## Find the corresponding instructions with order from flow analysis
 
-![Target Flow graph from Inclusion-based Points-to Analysis](flow_graph.png)
+![Target Flow graph from Inclusion-based Points-to Analysis](figs/flow_graph.png)
 
 ---
 
@@ -239,7 +328,7 @@ Context - Context ID = 0x597
 3630: bl  1a40 <pthread_mutex_unlock@plt>  
 ```
 
-![Pbzip2 concurrency bug](bug.jpg)
+![Pbzip2 concurrency bug](figs/bug.jpg)
 
 ---
 
