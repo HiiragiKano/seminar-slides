@@ -204,24 +204,9 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
-### Example
-```c
-int i, j, k;
-int *a = &i;
-           // a ⊇ {i}
-int *b = &k;
-           // a ⊇ {i}, b ⊇ {k}
-a = &j;
-           // a ⊇ {i, j}, b ⊇ {k}
-int **p = &a;
-           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}
-int **q = &b;
-           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}
-p = q;
-           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}, p ⊇ q
-int *c = *q;
-           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}, p ⊇ q, c ⊇ *q
-```
+**Example**
+
+![](figs/include_demo.pdf)
 
 ---
 
