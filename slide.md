@@ -84,7 +84,7 @@ int syscall_trace_enter(struct pt_regs *regs)
 ## Deploy for syscall record
 
 - We can install sysdig from source code and configure all dependencies manually. 
-    - It is very difficult because the origin Juno OS lack of **package manager** to install dependencies.
+    - It is very difficult because the origin Juno OS is lack of **package manager** to install dependencies.
     - We customize a Linux Kernel and software stacks based on Yocto Project for Juno Board and successfully install sysdig.
 
 - On the other hand, We also implement a tool to hook syscalls as sysdig does.
@@ -147,12 +147,14 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 
 ## Control flow construction and Data flow inference
 
-- Input: etm trace + coredump + record information
+### Input: etm trace + coredump + record information
+
     - etm trace + program binnary -> control flow
     - control flow + coredump + record information -> data flow
 
+### Output: Execution flow
 
-- Output: Execution flow, including order control flow and data flow 
+    - Including **order control flow** and **data flow** 
 
 ---
 
@@ -177,7 +179,10 @@ thread_id_1417 : ...new... : 0x5555591790 with size=72
 ## Flow analysis
 
 ### Output: 
-Memory pointer transfer relation graph, Failure type, analysis point obj location, location of hardware breakpoint/watchpoint.
+- Memory pointer transfer relation graph
+- Failure type
+- Analysis point obj location
+- Location of hardware breakpoint/watchpoint
 
 ---
 
@@ -192,8 +197,7 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
-### input: control_flow, analyse and construct constraints
-
+**input: control_flow, analyse and construct constraints**
 
 ![Constraint rules](figs/constraint_rules.pdf)
 
@@ -201,14 +205,30 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
-
-![Constraint rules](figs/include_demo.pdf)
+### Example
+```c
+int i, j, k;
+int *a = &i;
+           // a ⊇ {i}
+int *b = &k;
+           // a ⊇ {i}, b ⊇ {k}
+a = &j;
+           // a ⊇ {i, j}, b ⊇ {k}
+int **p = &a;
+           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}
+int **q = &b;
+           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}
+p = q;
+           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}, p ⊇ q
+int *c = *q;
+           // a ⊇ {i, j}, b ⊇ {k}, p ⊇ {a}, q ⊇ {b}, p ⊇ q, c ⊇ *q
+```
 
 ---
 
 ## Include-point-set analysis
 
-### Anderson algorithm
+**Anderson algorithm**
 
 ![](figs/ame.pdf)
 
@@ -216,7 +236,7 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
-### Get the graph edges and points
+**Get the points and edges**
 
 ![](figs/get_edges.pdf)
 
@@ -224,14 +244,15 @@ Why we need Include-point-set analysis
 
 ## Include-point-set analysis
 
+**Get the memory pointer transfer relation**
 
-![Memory pointer transfer relation graph](figs/final_graph.pdf)
+![Memory pointer transfer relation graph](figs/final_graph.jpeg)
 
 ---
 
 ## Identical Re-execution for data flow construction
 
-**Re-execution adjustment**
+**1.Re-execution adjustment**
 
 - According to the original control flow order to instrument binary to set delay, so that the Thread execution order of racing accesses during replay is consistent with the original control flow
     - The control flows of different threads in different CPU cores are combined into a control flow on a time line by the Timestamp of ETM
@@ -240,13 +261,13 @@ Why we need Include-point-set analysis
 
 - **Counter register** enable a trace unit to connect counter outputs to trace unit events, so that a counter at zero state can be used as a resource to activate an event
 
-- We configure initial counter value and reload value of counter registerto be **zero** so that make the timestamp register event generate all the time
+- We configure initial counter value and reload value of counter register to be **zero** so that make the timestamp register event generate all the time
 
 ---
 
 ## Identical Re-execution for data flow construction
 
-### ETM timestamp accuracy is adequate in most of practical concurrency programe
+Therefore, ETM timestamp accuracy is adequate in most of practical concurrency programe
 
 ![](figs/Timestamp.png)
 
@@ -254,7 +275,23 @@ Why we need Include-point-set analysis
 
 ## Identical Re-execution for data flow construction
 
-**Adaptive Hardware breakpoint/watchpoint Approach**
+**2.Adaptive Hardware breakpoint/watchpoint Approach**
+
+### input: location of hardware breakpoint/watchpoint
+- Set location of hardware breakpoint/watchpoint
+
+- Re-execution and output coredump of corresponding location
+
+- Using Control flow construction and Data flow inference
+
+### output:
+- Complete execution flow(control and data)
+
+---
+
+## Root Cause of concurrency bug finding
+
+**2.Adaptive Hardware breakpoint/watchpoint Approach**
 
 ### input: location of hardware breakpoint/watchpoint
 - Set location of hardware breakpoint/watchpoint
